@@ -13,6 +13,15 @@
 
 #define BITRATE 32000000
 
+/* Beware: you may need to change the formate here */
+#define SPI_DEVICE "/dev/spidev%d.%d"
+
+typedef struct{
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+}cAPA102_RGB;
+
 typedef struct{
     uint8_t number;
     uint8_t spi_bus;
@@ -20,7 +29,7 @@ typedef struct{
     int     fd_spi;
     uint8_t *pixels;
     uint8_t brightness;
-}APA102;
+}cAPA102_LEDs;
 
 /**
  * @brief Initialise a set of apa102 leds
@@ -40,7 +49,14 @@ uint8_t cAPA102_Init(uint8_t num, uint8_t spi_bus, uint8_t spi_dev, uint8_t brig
  *
  * @param[in] brightness Initial brightness
  */
-void cAPA102_change_brightness(uint8_t brightness);
+void cAPA102_Change_Brightness(uint8_t brightness);
+
+/**
+ * @brief Change the brightness and fresh
+ *
+ * @return current brightness value (0-31)
+ */
+uint8_t cAPA102_Get_Brightness(void);
 
 /**
  * @brief Set color for a specific pixel
@@ -51,7 +67,16 @@ void cAPA102_change_brightness(uint8_t brightness);
  * @param[in] blue Intensity of blue colour (0-255)
  *
  */
-void cAPA102_set_pixel_rgb(uint8_t index, uint8_t red, uint8_t green, uint8_t blue);
+void cAPA102_Set_Pixel_RGB(uint8_t index, uint8_t red, uint8_t green, uint8_t blue);
+
+/**
+ * @brief Get colour form a specific pixel
+ *
+ * @param[in] index Index of the target led (0-255)
+ *
+ * @return RGB_colour structure with rgb colour value
+ */
+cAPA102_RGB* cAPA102_Get_Pixel_RGB(uint8_t index);
 
 /**
  * @brief Set color for a specific pixel by using 4byte date
@@ -62,24 +87,33 @@ void cAPA102_set_pixel_rgb(uint8_t index, uint8_t red, uint8_t green, uint8_t bl
  * @param[in] blue Intensity of blue colour (0-255)
  *
  */
-void cAPA102_set_pixel_4byte(uint8_t index, uint32_t colour);
+void cAPA102_Set_Pixel_4byte(uint8_t index, uint32_t colour);
+
+/**
+ * @brief Get colour form a specific pixel
+ *
+ * @param[in] index Index of the target led (0-255)
+ *
+ * @return 32 bits colour data
+ */
+uint32_t cAPA102_Get_Pixel_4byte(uint8_t index);
 
 /**
  * @brief Clear all the pixels
  *
  */
-void cAPA102_clear_all(void);
+void cAPA102_Clear_All(void);
 
 /**
  * @brief Refresh display (After modifing pixel colour or changing brightness)
  *
  */
-void cAPA102_refresh(void);
+void cAPA102_Refresh(void);
 
 /**
  * @brief Close SPI file, release memory
  *
  */
-void cAPA102_close(void);
+void cAPA102_Close(void);
 
 #endif
