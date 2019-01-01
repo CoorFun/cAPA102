@@ -5,7 +5,7 @@ CFLAGS =  -Wall\
 
 SOURCES = src/cAPA102.c
 
-test = cAPA102_example
+example = cAPA102_example
 
 all: $(example)
 

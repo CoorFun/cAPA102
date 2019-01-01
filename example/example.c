@@ -3,12 +3,11 @@
 #include<unistd.h>
 
 int main(int argc, char *argv[]) {
-    int i;
     int bri = 0;
     int dir = 0;
     int time = 0;
     cAPA102_Init(12, 0, 0, 31);
-
+    int i;
     for ( i = 0; i < 3; i++)
         cAPA102_Set_Pixel_4byte(i, 0xFF0000);
         //cAPA102_Set_Pixel_RGB(i, 255, 0, 0);
