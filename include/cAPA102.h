@@ -1,8 +1,10 @@
 #ifndef __cAPA102_H__
 #define __cAPA102_H__
+#include <stdio.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <linux/spi/spidev.h>
@@ -20,66 +22,56 @@
 #define RETRY_GAP_SEC 10
 
 typedef struct{
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
-}cAPA102_RGB;
-
-typedef struct{
     uint32_t number;
-    uint8_t  spi_bus;
-    uint8_t  spi_dev;
     int      fd_spi;
     uint8_t  *pixels;
     uint8_t  brightness;
 }cAPA102_LEDs;
 
 /**
- * @brief Initialise a set of apa102 leds
+ * @brief: Initialise a set of apa102 LEDs
  *
- * @param[in] num Number of leds (0-255)
- * @param[in] spi_bus SPI bus number (0-255)
- * @param[in] spi_dev SPI device number (0-255)
- * @param[in] brightness Initial brightness (0-31)
+ * @param[in] led_num: Number of leds (0-255)
+ * @param[in] spi_bus: SPI bus number (0-255)
+ * @param[in] spi_dev: SPI device number (0-255)
+ * @param[in] brightness: Global brightness (0-31)
  *
- * @returns boolean
- *
+ * @returns:  0\ Success
+ *           -1\ Error
  */
 int cAPA102_Init(uint32_t led_num, uint8_t spi_bus, uint8_t spi_dev, uint8_t brightness);
 
 /**
- * @brief Change the brightness and fresh
+ * @brief: Change the global brightness and fresh
  *
- * @param[in] brightness Initial brightness
+ * @param[in] brightness: New brightness value
  */
 void cAPA102_Change_Brightness(uint8_t brightness);
 
 /**
- * @brief Change the brightness and fresh
+ * @brief: Get the brightness
  *
  * @return current brightness value (0-31)
  */
 int cAPA102_Get_Brightness(void);
 
 /**
- * @brief Set color for a specific pixel
+ * @brief: Set color for a specific pixel by giving R, G and B value separately
  *
- * @param[in] index Index of the target led (0-255)
- * @param[in] red Intensity of red colour (0-255)
- * @param[in] green Intensity of green colour (0-255)
- * @param[in] blue Intensity of blue colour (0-255)
- *
+ * @param[in] index: Index of the target led (0-255)
+ * @param[in] red: Intensity of red colour (0-255)
+ * @param[in] green: Intensity of green colour (0-255)
+ * @param[in] blue: Intensity of blue colour (0-255)
  */
 void cAPA102_Set_Pixel_RGB(uint32_t index, uint8_t red, uint8_t green, uint8_t blue);
 
 /**
- * @brief Get colour form a specific pixel
+ * @brief: Get colour form a specific pixel for R, G and B separately
  *
- * @param[in] index Index of the target led (0-255)
+ * @param[in] index: Index of the target led (0-255)
  * @param[out] red: Intensity of red colour (0-255)
  * @param[out] green: Intensity of green colour (0-255)
  * @param[out] blue: Intensity of blue colour (0-255)
- *
  */
 void cAPA102_Get_Pixel_RGB(uint32_t index, uint8_t *red, uint8_t *green, uint8_t *blue);
 
@@ -91,37 +83,31 @@ void cAPA102_Get_Pixel_RGB(uint32_t index, uint8_t *red, uint8_t *green, uint8_t
  * @param[in] green: Intensity of green colour (0-255)
  * @param[in] blue: Intensity of blue colour (0-255)
  *
- * @example: set the 2nd pixel to Yellow (#FFFF00)
- *      cAPA102_Set_Pixel_4byte(2, 0xFFFF00);
- *
+ * @example: cAPA102_Get_Pixel_RGB(1, 0xFF0000) sets the 1st LED to red colour
  */
 void cAPA102_Set_Pixel_4byte(uint32_t index, uint32_t colour);
 
 /**
- * @brief Get colour form a specific pixel
+ * @brief: Get colour form a specific pixel
  *
- * @param[in] index Index of the target led (0-255)
+ * @param[in] index: Index of the target led (0-255)
  *
- * @return 32 bits colour data
+ * @returns: 32 bits colour data
  */
 uint32_t cAPA102_Get_Pixel_4byte(uint32_t index);
 
 /**
- * @brief Clear all the pixels
- *
+ * @brief: Clear all the pixels
  */
 void cAPA102_Clear_All(void);
 
 /**
- * @brief Refresh display (After modifing pixel colour or changing brightness)
- *
+ * @brief: Refresh display (After modifing pixel colour)
  */
 void cAPA102_Refresh(void);
 
 /**
- * @brief Close SPI file, release memory
- *
+ * @brief: Close SPI file, release memory
  */
 void cAPA102_Close(void);
-
 #endif
